@@ -1,88 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>WhatsApp Message Sender Form</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="Style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mc Form</title>
+     <link rel="stylesheet" href="Style.css">
 </head>
+
 <body>
-  <div class="logo">
-    <img src="Img/Kp W.png" class="profile-photo">
-  </div>
 
-  <main class="form-container" role="main" aria-labelledby="form-title">
-    <h1 id="form-title" tabindex="0">RESERVATION FORM</h1>
+    <!-- HEADER -->
+    <div class="header">
+        <img src="img/logo.png" alt="Logo">
+        <h1>RESERVASI ACARA</h1>
+    </div>
 
-    <form id="whatsappForm" aria-describedby="form-instructions">
-      <p id="form-instructions" class="sr-only">Fill out the form and press Send message to open WhatsApp chat with pre-filled message.</p>
+    <!-- FORM -->
+    <div class="container">
+        <form id="eventForm">
 
-      <label for="fullName">Nama Lengkap</label>
-      <input type="text" id="fullName" name="fullName" required placeholder="Nama Lengkap Kamu" aria-required="true" />
+            <div class="form-group">
+                <label for="nama">Nama</label>
+                <div class="input-wrapper">
+                    <input type="text" id="nama" name="nama" required placeholder="Nama Lengkap">
+                </div>
+            </div>
 
-      <label for="whatsappNumber">No. Whatsapp</label>
-      <input type="tel" id="whatsappNumber" name="Nomor WhatsApp" required placeholder="CountryCode+Number e.g. 628123456789" pattern="^\d{7,15}$" aria-required="true" aria-describedby="whatsappHelp" />
-      <small id="whatsappHelp" class="text-xs text-purple-700 block mb-3">Hanya masukan nomor</small>
+            <div class="form-group">
+                <label for="tanggal">Tanggal Acara</label>
+                <div class="input-wrapper">
+                    <input type="date" id="tanggal" name="tanggal" required>
+                </div>
+            </div>
 
-      <label for="instagram">Instagram</label>
-      <input type="text" id="instagram" name="instagram" placeholder="Username Instagram" />
+            <div class="form-group">
+                <label for="jenis">Jenis Acara</label>
+                <div class="input-wrapper">
+                    <select id="jenis" name="jenis" required>
+                        <option value="">Pilih Jenis Acara</option>
+                        <option value="Ulang Tahun">Ulang Tahun</option>
+                        <option value="Pernikahan">Pernikahan</option>
+                        <option value="Seminar">Seminar</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
+                </div>
+            </div>
 
-      <label for="eventPurpose">Keperluan Acara</label>
-      <input type="text" id="eventPurpose" name="eventPurpose" placeholder="Nama Acara" />
+            <div class="form-group">
+                <label for="alamat">Alamat</label>
+                <div class="input-wrapper">
+                    <textarea id="alamat" name="alamat" rows="4" placeholder="Alamat Lengkap" required></textarea>
+                </div>
+            </div>
 
-      <label for="bookingDate">Tanggal Booking</label>
-      <input type="date" id="bookingDate" name="bookingDate" />
 
-      <label for="eventAddress">Alamat lengkap tempat Acara</label>
-      <textarea id="eventAddress" name="eventAddress" placeholder="Alamat Lengkap / Share Location (Optional)"></textarea>
+            <button type="submit">Kirim ke WhatsApp</button>
 
-      <button type="submit" aria-label="Send message to WhatsApp">Send Message</button>
-    </form>
-  </main>
+        </form>
 
-  <script>
-    document.getElementById('whatsappForm').addEventListener('submit', function(e) {
-      e.preventDefault();
+    </div>
 
-      // Collect values
-      const fullName = encodeURIComponent(this.fullName.value.trim());
-      let whatsappNumber = this.whatsappNumber.value.trim();
-      const instagram = encodeURIComponent(this.instagram.value.trim());
-      const eventPurpose = encodeURIComponent(this.eventPurpose.value.trim());
-      const bookingDate = this.bookingDate.value;
-      const eventAddress = encodeURIComponent(this.eventAddress.value.trim());
+    <script>
+        document.getElementById('eventForm').addEventListener('submit', function (event) {
+            event.preventDefault();
 
-      // Simple phone validation (digits only, length 7-15)
-      if (!/^\d{7,15}$/.test(whatsappNumber)) {
-        alert("Please enter a valid WhatsApp number with digits only (7 to 15 digits).");
-        this.whatsappNumber.focus();
-        return;
-      }
+            const nama = document.getElementById('nama').value;
+            const tanggal = document.getElementById('tanggal').value;
+            const jenis = document.getElementById('jenis').value;
+            const alamat = document.getElementById('alamat').value;
 
-      // Construct message parts with line breaks
-      let messageLines = [];
-      messageLines.push("Reservation Form Submission:");
-      messageLines.push("Nama Lengkap: " + fullName);
-      messageLines.push("No. Whatsapp: " + whatsappNumber);
-      if (instagram) messageLines.push("Instagram: @" + instagram);
-      if (eventPurpose) messageLines.push("Keperluan Acara: " + eventPurpose);
-      if (bookingDate) messageLines.push("Tanggal Booking: " + bookingDate);
-      if (eventAddress) messageLines.push("Alamat lengkap tempat Acara: " + eventAddress);
+            const message =
+                `Halo, saya mau reservasi jasa MC untuk acara saya.\n\n` +
+                `Nama Lengkap: ${nama}\n` +
+                `Tanggal Acara: ${tanggal}\n` +
+                `Jenis Acara: ${jenis}\n` +
+                `Alamat: ${alamat}`;
 
-      let message = messageLines.join("%0A");
+            const encodedMessage = encodeURIComponent(message);
 
-      // Format number as WhatsApp URL (country code + number)
-      // WhatsApp official expects number without any + or 0 prefix (except country code is included)
-      // so we trust the user to enter country code in number field.
+            // Nomor WhatsApp (awas: harus string!)
+            const whatsappNumber = "6285163204198";
 
-      const whatsappURL = `https://wa.me/${+6283151412585}?text=${message}`;
+            const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+            window.location.href = whatsappURL;
+        });
+    </script>
 
-      // Open WhatsApp link in new tab
-      window.open(whatsappURL, "_blank");
-    });
-
-  </script>
 </body>
-</html>
 
+</html>
